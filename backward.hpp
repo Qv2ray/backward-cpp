@@ -3278,8 +3278,13 @@ class TraceResolverImpl<system_tag::darwin_tag>
 // https://stackoverflow.com/questions/6205981/windows-c-stack-trace-from-a-running-app/28276227#28276227
 
 struct module_data {
+#ifdef UNICODE
+  std::wstring image_name;
+  std::wstring module_name;
+#else
   std::string image_name;
   std::string module_name;
+#endif
   void *base_address;
   DWORD load_size;
 };
@@ -3293,7 +3298,7 @@ public:
 
   module_data operator()(HMODULE module) {
     module_data ret;
-    char temp[buffer_length];
+    TCHAR temp[buffer_length];
     MODULEINFO mi;
 
     GetModuleInformation(process, module, &mi, sizeof(mi));
@@ -3367,7 +3372,7 @@ public:
                     NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                     (LPTSTR)&lpMsgBuf, 0, NULL);
 
-      printf(lpMsgBuf);
+      // printf(lpMsgBuf);
 
       // abort();
     }
