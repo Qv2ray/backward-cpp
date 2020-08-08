@@ -700,6 +700,7 @@ public:
   bool can_safely_backtrace() {
     // we can't safely take a backtrace if we're inside malloc call
     // hopefully `backtrace` won't use it
+#ifndef _WIN32
     void *trace_addrs[50];
     int addr_count = backtrace(&trace_addrs[0],
                                sizeof(trace_addrs) / sizeof(trace_addrs[0]));
@@ -714,6 +715,7 @@ public:
         }
       }
     }
+#endif
     return true;
   }
 #else
